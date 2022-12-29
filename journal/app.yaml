@@ -18,8 +18,7 @@ handlers:
   script: auto
   secure: always
 
--automatic_scaling:
-  min_num_instances: 0
-  max_num_instances: 2
+automatic_scaling:
+  max_instances: 2
 
 # [END django_app]
