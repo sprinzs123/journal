@@ -5,4 +5,4 @@ settings.py
 urls.py
 static/
 journal/static
-journal/story/stories
+journal/story/stories/
