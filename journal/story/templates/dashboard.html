@@ -3,8 +3,24 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <h1>dashboard page</h1>
 
+    <h1>dashboard page</h1>
+        <form method="POST" action="/">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-submit" id='backup' value="backup">Back up</button>
+            <input type="hidden" name="back_up" id="" placeholder="test">
+        </form>
+
+        {% for entry in entries %}
+        <div class="entry">
+            <div class="title-text">
+                <h3 class="mb-0">{{ entry.date_start}} {{entry.day_of_week_start}}</h3>
+                <h5 class="pt-0">{{ entry.title }}</h5>
+            </div>
+                <div>{{ entry.text}}</div>
+        </div>
+
+        {% endfor %}
 </div>
 
 {% endblock %}
