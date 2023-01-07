@@ -6,3 +6,4 @@ urls.py
 static/
 journal/static
 journal/story/stories/
+stories/
