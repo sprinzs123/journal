@@ -15,5 +15,5 @@ class Entry(models.Model):
     tags = models.TextField(max_length=50, blank=True)
 
     def __str__(self):
-        return f'{self.date_start} {self.title} {self.day_of_week_start}'
+        return f"{self.date_start.strftime('%m/%d/%Y')} {self.title} {self.day_of_week_start}"
 
