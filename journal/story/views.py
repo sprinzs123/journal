@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
 import json
+import os
 
 
 @login_required
@@ -12,7 +13,8 @@ def home(request):
     if request.method == "POST":
         data = request.POST
         if data.get('back_up') == "":
-            full_back_up(entries)
+            all_data_dic = full_back_up(entries)
+            make_new_json_backup("2023_all.json", all_data_dic)
     return render(request, 'dashboard.html', {'entries': entries})
 
 
@@ -20,11 +22,11 @@ def home(request):
 # use pk for incremental back up
 # used in full monthly backups
 def full_back_up(entries):
-    db_to_json = {}
+    all_dic_enry= {}
     for story in entries:
         json_story = entry_to_dic(story)
-        db_to_json.update(json_story)
-    return db_to_json
+        all_dic_enry.update(json_story)
+    return all_dic_enry
 
 
 # return what data is missing from back up file
@@ -69,4 +71,15 @@ def get_last_json_pk(file_name):
     f.close()
     return last_pk
 
+
+# create new json file from input dictionary
+# used creating monthly backups
+def make_new_json_backup(file_name, input_dic):
+    json_converted = json.dumps(input_dic)
+    curr_dir = os.path.dirname(__file__)
+    full_path = os.path.join(curr_dir, 'stories/', file_name)
+    print(full_path)
+    with open(full_path, 'w') as f:
+        f.write(json_converted)
+        print("The json file " + file_name + " is created")
 
