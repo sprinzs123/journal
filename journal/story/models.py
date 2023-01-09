@@ -15,5 +15,10 @@ class Entry(models.Model):
     tags = models.TextField(max_length=50, blank=True)
 
     def __str__(self):
-        return f"{self.date_start.strftime('%m/%d/%Y')} {self.title} {self.day_of_week_start}"
+        # see if have event that lasted several days
+        if self.date_start == self.date_end:
+            return f"{self.date_start.strftime('%m %B %Y')} {self.title} {self.day_of_week_start}"
+        else:
+            return f"{self.date_start.strftime('%d')}-{self.date_end.strftime('%d %B %Y')} {self.title} {self.day_of_week_start}"
+
 

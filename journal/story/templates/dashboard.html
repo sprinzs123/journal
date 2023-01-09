@@ -1,26 +1,69 @@
-
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-<div class="container">
-
+<!--
+    <div class="container">
+    <form method="POST" action="/">
+        {% csrf_token %}
+        <button class="btn btn-danger btn-submit" id='backup' value="backup">Back up</button>
+        <input type="hidden" name="back_up" id="" placeholder="test">
+    </form>
+-->
+    <!-- starting displaying all items  -->
     <h1>dashboard page</h1>
-        <form method="POST" action="/">
-            {% csrf_token %}
-            <button class="btn btn-danger btn-submit" id='backup' value="backup">Back up</button>
-            <input type="hidden" name="back_up" id="" placeholder="test">
-        </form>
+    <!-- modal start  -->
 
-        {% for entry in entries %}
-        <div class="entry">
-            <div class="title-text">
-                <h3 class="mb-0">{{ entry.date_start}} {{entry.day_of_week_start}}</h3>
-                <h5 class="pt-0">{{ entry.title }}</h5>
-            </div>
-                <p>{{ entry.text | linebreaks }}</p>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add entry</h5>
         </div>
+        <div class="modal-body">
+            <div class="modal-input">
+                <div>Title</div>
+                <input type="text" placeholder="Title" name="title-submit" id="" class="mb-3">
 
-        {% endfor %}
+            </div>
+            <div class="modal-input">
+                <div>Start Date</div>
+                <input type="text" placeholder="date m-d-y" name="date-start" id="" class="mb-3">
+
+            </div>
+            <div class="modal-input">
+                <div>End Date</div>
+                <input type="text" placeholder="date m-d-y" name="date-end" id="" class="mb-3">
+
+            </div>
+            <textarea class="form-control mt-5" id="exampleFormControlTextarea1" rows="10"></textarea>        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="entry-submit">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      <!-- modal end  -->
+
+
+    {% for entry in entries %}
+    <div class="entry">
+        <div class="title-text">
+            <h3 class="mb-0">{{ entry.date_start}} {{entry.day_of_week_start}}</h3>
+            <h5 class="pt-0">{{ entry.title }}</h5>
+        </div>
+        <p>{{ entry.text | linebreaks }}</p>
+    </div>
+
+    {% endfor %}
 </div>
 
 {% endblock %}
