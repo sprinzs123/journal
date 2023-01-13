@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
-import json
-import os
+import os, datetime, json
 
 
 @login_required
@@ -16,6 +15,24 @@ def home(request):
             all_data_dic = full_back_up(entries)
             make_new_json_backup("2023_all.json", all_data_dic)
     return render(request, 'dashboard.html', {'entries': entries})
+
+
+# save data that been submitted by a form
+# get information from request that been submitted
+def save_data(received_request):
+    title = received_request.get("title-submit")
+    date_start_str = received_request.get("date-start-submit")
+    date_end_str = received_request.get("date-end-submit")
+    text = received_request.get("text-submit")
+    tags = received_request.get("tags-submit")
+
+    date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
+    date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
+
+    day_of_week_start = received_request.get("date-start-submit")
+    day_of_week_end = received_request.get("date-end-submit")
+
+
 
 
 # make JSON file with all db for back up purposes, automatic if run on desktop only

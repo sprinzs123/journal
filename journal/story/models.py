@@ -17,7 +17,7 @@ class Entry(models.Model):
     def __str__(self):
         # see if have event that lasted several days
         if self.date_start == self.date_end:
-            return f"{self.date_start.strftime('%m %B %Y')} {self.title} {self.day_of_week_start}"
+            return f"{self.date_start.strftime('%d %B %Y')} {self.title} {self.day_of_week_start}"
         else:
             return f"{self.date_start.strftime('%d')}-{self.date_end.strftime('%d %B %Y')} {self.title} {self.day_of_week_start}"
 
