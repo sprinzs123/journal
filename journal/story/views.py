@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
+from .make_back_ups import settings_managment
 import os, datetime, json
+
 
 
 @login_required
@@ -93,10 +95,22 @@ def get_last_json_pk(file_name):
 # used creating monthly backups
 def make_new_json_backup(file_name, input_dic):
     json_converted = json.dumps(input_dic)
+
+    # setting up dir to store new JSON
     curr_dir = os.path.dirname(__file__)
-    full_path = os.path.join(curr_dir, 'stories/', file_name)
-    print(full_path)
+
+    # setting up string of the JSON file to be saved
+    #time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    setting_object = settings_managment.Settings()
+    back_up_string_update = str(setting_object.get_curr_save_version())
+    full_file_name = file_name + " " + back_up_string_update
+    setting_object.set_new_backup_version()
+
+    full_path = os.path.join(curr_dir, 'stories/', full_file_name)
+
+
+    # saving JSON file
     with open(full_path, 'w') as f:
         f.write(json_converted)
-        print("The json file " + file_name + " is created")
+        print("The json file " + full_file_name + " is created")
 
