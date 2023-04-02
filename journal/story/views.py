@@ -4,7 +4,13 @@ from django.contrib.auth.decorators import login_required
 from .make_back_ups import settings_managment
 import os, datetime, json
 
-
+#api
+from rest_framework import viewsets
+from rest_framework import status
+from .serializers import EntrySerializer
+from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 @login_required
 def home(request):
@@ -13,10 +19,19 @@ def home(request):
     # check is anything will be needed to be added to db or want to back up data
     if request.method == "POST":
         data = request.POST
-        if data.get('back_up') == "":
+        if data.get('back_up') == "" and os.uname()[1] == "shef":
             all_data_dic = full_back_up(entries)
             make_new_json_backup("2023_all.json", all_data_dic)
     return render(request, 'dashboard.html', {'entries': entries})
+
+# API end point
+class JournalViewSet(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        entry = Entry.objects.all().order_by("-id")
+        serializer = EntrySerializer(entry, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 # save data that been submitted by a form
@@ -33,8 +48,6 @@ def save_data(received_request):
 
     day_of_week_start = received_request.get("date-start-submit")
     day_of_week_end = received_request.get("date-end-submit")
-
-
 
 
 # make JSON file with all db for back up purposes, automatic if run on desktop only
@@ -79,7 +92,6 @@ def entry_to_dic(one_entry):
     return one_entry_dic
 
 
-
 # get last entry in json back up file
 def get_last_json_pk(file_name):
     f = open("stories/" + file_name)
@@ -91,23 +103,19 @@ def get_last_json_pk(file_name):
     return last_pk
 
 
-# create new json file from input dictionary
-# used creating monthly backups
+# create new json file from input dictionary locally
 def make_new_json_backup(file_name, input_dic):
     json_converted = json.dumps(input_dic)
-
-    # setting up dir to store new JSON
+        # setting up dir to store new JSON
     curr_dir = os.path.dirname(__file__)
 
-    # setting up string of the JSON file to be saved
-    #time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        # setting up string of the JSON file to be saved
+        #time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     setting_object = settings_managment.Settings()
     back_up_string_update = str(setting_object.get_curr_save_version())
     full_file_name = file_name + " " + back_up_string_update
     setting_object.set_new_backup_version()
-
     full_path = os.path.join(curr_dir, 'stories/', full_file_name)
-
 
     # saving JSON file
     with open(full_path, 'w') as f:
