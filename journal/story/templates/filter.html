@@ -1,0 +1,10 @@
+<div class="py-2">
+  <form method="POST" name="filter">
+      {% csrf_token %}
+      <input placeholder="start date" name="start-date">
+      <input placeholder="end date" name="end-date">
+      <input placeholder="tags" name="tags">
+      <input placeholder="text search" name="text">
+    <button class="btn btn-primary">Filter</button>
+  </form>
+</div>

@@ -3,9 +3,9 @@ from .models import Entry
 from django.contrib.auth.decorators import login_required
 from .make_back_ups import settings_managment
 import os, datetime, json
-
+from .search import model_filter
+#import search
 #api
-from rest_framework import viewsets
 from rest_framework import status
 from .serializers import EntrySerializer
 from rest_framework import permissions
@@ -19,9 +19,19 @@ def home(request):
     # check is anything will be needed to be added to db or want to back up data
     if request.method == "POST":
         data = request.POST
+        print(list(data.items()))
+        print(data.get("text"))
+        print(request.POST.__contains__("text"))
         if data.get('back_up') == "" and os.uname()[1] == "shef":
             all_data_dic = full_back_up(entries)
             make_new_json_backup("2023_all.json", all_data_dic)
+        if data.get("text"):
+            text_filter = data.get("text")
+            sample_filter = {"start_date": "", "end_date": "", "title": "", "text": text_filter}
+            filer_object = model_filter.Filter(sample_filter)
+            entries = filer_object.get_data()
+            return render(request, 'dashboard.html', {'entries': entries})
+
     return render(request, 'dashboard.html', {'entries': entries})
 
 # API end point
